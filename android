@@ -1,0 +1,64 @@
+全屏没有title 外置usb键盘输入抽插  不重绘activiti
+<activity android:name="com.qeek.mes.activitynew.PeopleIn"
+         		android:screenOrientation="landscape"
+         		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+         		android:configChanges="locale|orientation|layoutDirection|keyboard|keyboardHidden"
+         		android:label="---人力投入--">
+     </activity>
+     
+     
+     
+     核对用户 
+     private String checkUserAccess(String userName, String userPassword) {
+           RestTemplate  rest=new RestTemplate(true);
+           //会true 会默认加上消息转化器 但是传统表单提交的时候  只能是字符串
+           //rest.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+           //rest.getMessageConverters().add(new FormHttpMessageConverter());
+           
+           //"http://192.168.8.204/qmes"
+           String header=MesWebService.getMesEmptySoap().getWsWsdl();
+           String url=header+"/login";  //不能写死 读配置文件的
+           
+           HttpHeaders headers = new HttpHeaders();
+           headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+           
+           MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+           map.add("username", userName);
+           map.add("password", userPassword);
+           map.add("rememberMe", "false");
+           
+           HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+           
+           LoginResult res=rest.postForObject(url, request, LoginResult.class);
+		   System.out.println(res.toString());
+		/*String identifyValue = responseObj
+				.getPropertyAsString("UserIdentifyResult");
+		String ticketValue = responseObj.getPropertyAsString("ticket");
+		Log.w("wuzhb", "responseObj=" + responseObj + "\nUserIdentifyResult="
+				+ identifyValue + "\nticketValue=" + ticketValue + "\n");*/
+		   String identifyValue = "";
+			String ticketValue = "18671168515";  
+		   
+		if(res.getCode()==500){
+			identifyValue="not exist or password err";
+		}
+		else if(res.getCode()==0){
+			identifyValue="login success";
+		}
+		
+		
+
+		if (!TextUtils.isEmpty(identifyValue)
+				&& !"not exist or password err".equals(identifyValue)
+				) {
+
+			Editor editPref = sharedPref.edit();
+			editPref.putString(USER_NAME, userName);
+			
+			editPref.putString(USER_TICKET, ticketValue);
+			editPref.commit();
+		}
+
+		return identifyValue;
+
+	}
