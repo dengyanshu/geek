@@ -3,3 +3,9 @@
      <script  src="./lib/vue-2.4.0.js"></script>
       <link href="./lib/bootstrap-3.3.7.css"  rel="stylesheet">
  3、vue 的时候 发现点击按钮表单提交重刷了 页面
+ 4、for(var i=0;i<list.length;i++){
+       if(list[i].id==id){
+         this.list.splice(i,1);//splice使用  会改变原数组不需要另外接受
+       }
+    }
+    this.list=this.list.filter(item=>item.indexOf(this.keyword))!=-1)  会返回新数组 必须要接受
