@@ -1,0 +1,1 @@
+1、es6 中 var  y=new  Date().getYear(); 取这个年可以用es6语法  '${y}-' 
