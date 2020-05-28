@@ -1,1 +1,4 @@
 1、es6 中 var  y=new  Date().getYear(); 取这个年可以用es6语法  '${y}-' 
+2、  写对不然可能加载不到css或js 文件   
+     <script  src="./lib/vue-2.4.0.js"></script>
+      <link href="./lib/bootstrap-3.3.7.css"  rel="stylesheet">
