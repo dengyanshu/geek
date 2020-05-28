@@ -2,3 +2,4 @@
 2、  写对不然可能加载不到css或js 文件   
      <script  src="./lib/vue-2.4.0.js"></script>
       <link href="./lib/bootstrap-3.3.7.css"  rel="stylesheet">
+ 3、vue 的时候 发现点击按钮表单提交重刷了 页面
