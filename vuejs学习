@@ -85,3 +85,22 @@
   package.json 里面 script脚本配置  --hot  --open --port 3000  webpack-dev-server
   webpack  无法打包css 需要本地安装很多依赖  webpack.config.js 里面设置
   babel 是用来将高级js语法转低级语法   .babelrc 配置页面
+
+
+8、node 中找包原则  import Vue  from 'Vue' (npm i vue -D)
+   先在根目录找  
+   然后node_module中找  vue 文件夹 ；package.json ；然后找main属性  的文件；  会提示正在使用runtime-only的包
+   
+   import   Vue  form './node_modules/vue/dist/vue.js'
+   
+9、vue  webpacka使用
+   npm i  vue -S  
+   import  Vue from 'vue'
+   配置webpack 解析vue
+   写自己的login.vue
+   import  login  from  './login.vue'
+   调用vue 第2种 render方法 渲染到    
+   vra  vue  =new Vue({
+        el:"#app",
+        render:c=>c(login);
+   })
