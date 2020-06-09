@@ -75,3 +75,13 @@
         // updated 事件执行的时候，页面和 data 数据已经保持同步了，都是最新的
       }
 
+7、webpack  全局安装    
+   npm i webpack   -D 本地安装
+   npm i webpack-dev-server  -D  因为webpack-dev-server 依赖webpack 的本地安装
+   webpack.config.js 
+    const path=require("path")
+    配置 打包文件main.js   文件打包到dist目录下 文件名字叫bundle.js   var todir=path.join(__dirname,'./dist')
+    配置html缓存页面插件  如index.html 会自动引入bundle.js
+  package.json 里面 script脚本配置  --hot  --open --port 3000  webpack-dev-server
+  webpack  无法打包css 需要本地安装很多依赖  webpack.config.js 里面设置
+  babel 是用来将高级js语法转低级语法
