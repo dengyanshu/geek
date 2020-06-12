@@ -104,3 +104,115 @@
         el:"#app",
         render:c=>c(login);
    })
+
+
+10、项目
+    A、index.html
+     <body  style="background:white;">
+	   <div  id="app"></div>
+	 </body>
+B、main.js
+    import  Vue  from 'vue'
+	import  App  from './App.vue'
+	import  router  from  './Router/router.js' ()
+	importe  vuex  from './Vuex/vuex.js'
+	
+	 var  app=new Vue({
+	    el:"#app",
+		render:c=>c(App);
+	    router;
+		vuex;
+	 })
+C、App.vue
+    <template>
+  <div  class="app">
+     <mt-header fixed title="固定在顶部"></mt-header>
+   
+      <transition>
+          <router-view/>
+      </transition>
+    
+    <nav class="mui-bar mui-bar-tab">
+			<router-link class="mui-tab-item" to="/head">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</router-link>
+			<router-link class="mui-tab-item" to="/message">
+				<span class="mui-icon mui-icon-email"><span class="mui-badge">9</span></span>
+				<span class="mui-tab-label">消息</span>
+			</router-link>
+			<a class="mui-tab-item" href="#tabbar-with-contact">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-cart"></span>
+				<span class="mui-tab-label">通讯录</span>
+			</a>
+
+			<a class="mui-tab-item" href="#tabbar-with-map">
+				<span class="mui-icon mui-icon-gear"></span>
+				<span class="mui-tab-label">设置</span>
+			</a>
+		</nav>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+<style scoped>
+.app{
+  padding-top: 40px;
+  overflow-x: hidden;
+  padding-bottom: 40px;
+  
+}
+.v-enter{
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+
+.v-leave-to{
+    opacity: 0;
+    transform: translateX(-100%);
+    position: absolute;
+}
+.v-enter-active, .v-leave-active{
+    transition: all  0.8s  ease;
+}
+
+</style>
+	
+D、router.js
+
+import Vue from 'vue'
+import Router from 'vue-router'
+import HelloWorld from '@/components/HelloWorld'
+
+import  Head  from  '../components/main/head'
+import  Message  from  '../components/main/message'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+        redirect:'/head'
+    },
+    {
+      path: '/head',
+      name: 'head',
+      component: Head
+    },
+    {
+      path: '/message',
+      name: 'message',
+      component: Message
+    }
+  ],
+  //路由高亮样式
+  linkActiveClass:'mui-active'
+})
+
+E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：npm install sass sass-loader@6.0.6
