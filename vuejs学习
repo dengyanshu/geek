@@ -216,3 +216,27 @@ export default new Router({
 })
 
 E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：npm install sass sass-loader@6.0.6
+
+11、路由路径写法
+    <rout-link  :to="'/head/news/newsinfo'+item.id">
+    路由配置写法：
+     {'path':'/home/news/newsinfo/:id'}
+     组件写法：(引入子组件)
+     <templata>
+           <div>
+	     <h1>信息详情标题</h1>
+	      <p>信息详情内容内容内容</p>
+	      <Pinglun :id="id"></Pinglun>
+	   </div>
+     </template>
+     import Pinglun from "../components/common/pinglun.vue"
+     export default{
+         data(){
+	    return {
+	        id:this.$route.params.id  //一定要加this
+	    }
+	 },
+	 components:{
+	   Pinglun
+	 }
+     }
