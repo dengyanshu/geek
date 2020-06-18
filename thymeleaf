@@ -1,0 +1,119 @@
+1、页面配置
+    @RequestMapping("/linenew")
+    public String  linenew(Model model,String lineName) {
+    	model.addAttribute("lineName", lineName);
+    	return  "/mes/vue/line"   前面不能加/ 否则本地可以  tomcat里面可以 但是  jar 和war运行都找不到
+ 2、model传递数据到页面
+ 3、thymeleaf 页面写法
+ <!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+       <th:block th:include="include :: header('线体看板')" />
+       <link rel="icon" th:href="@{/qs/img/logo.png}" type="image/x-icon" />
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no, target-densitydpi=device-dpi"/>
+  </head>
+  <body>
+     <div th:include="include :: footer"></div>
+     <script src="../static/js/highcharts.js" type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+     <script type="text/javascript" th:inline="javascript">
+     </script>
+  </body>
+</html>
+
+
+4、css中 thymeleaf 路径
+data-page {
+  background: url("[[@{/}]]img/mes/3957df79.png") repeat-x;
+  top: 0;
+  right: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  min-width: 1220px;
+}
+
+<link rel="icon" th:href="@{/qs/img/logo.png}" type="image/x-icon" />
+
+@font-face {
+    font-family: "numfont";
+    src: url('[[@{/}]]css/site/num.otf') format('truetype');
+}
+
+html中 路径写法
+<div class="img" id="current_p_img"  
+       th:style="'background: url('+@{/img/mes/logo1.png}+');'">
+</div>
+车间看板的html写法
+<div  id="middle" style="display:flex; flex-wrap:wrap;height:100%;width:100%">         
+<div class="mapBox mapBox-inner" th:each="data : ${datas.rows}" id="line">
+       <div class="windTitle">
+              线体：<span>[[${data.lineName}]]</span>
+              &nbsp;&nbsp;工单:<span th:text="${data.get('workorderName')}">11111</span>
+              &nbsp;&nbsp;料号:<span th:text="${data.get('material')}">    </span>
+        </div>
+       <div class="report">
+           <div class="report2"><p>总产出</p> <small>[[${data.get('line_output')}]]</small></div> 
+            <div class="report1"><p>总不良</p> <small>[[${data.get('line_ipqc')}]]</small></div> 
+             <div class="report1"><p>不良率</p> <small>[[${data.get('fpy')}]]</small></div> 
+       </div>
+
+        <div   style="display:flex;justify-content: space-between;align-item:center;height:80px;">
+             <div style="flex:1;margin-left:20px;margin-right:15px;">
+                <button class="btn btn-success" type="button"> 标准人力 <span class="badge" id="standardPeople">[[${data.get('standardPeople')}]]</span></button>
+                   <button class="btn btn-danger " type="button" style="margin-top:5px;"> 实际人力 <span class="badge" id="acturallyPeople">[[${data.get('people_count')}]]</span></button>
+             </div>
+
+  <div class="windBox"  style="flex:2;margin-bottom:5px;">
+   <div style="width: 50%;margin-right:15px;">
+                    <p>自动采集器</p>
+                    <p><span class="highestSpeed" id="highWind">[[${data.get('outputqty')}]]</span></p>
+                </div>
+                <div style="width: 35%;height:95px;">
+                    <div class="windWrap">
+                        <img th:src="@{/img/site/wind1.png}"  th:classappend="${data.get('outputqty')} != null? 'windFan' : 'windFanOld'">
+                    </div>
+                 </div>
+          </div>
+   </div>     
+</div>
+<div th:include="include :: footer"></div>
+    
+    <script th:src="@{/js/site/echarts.js}"></script>
+    <script th:src="@{/js/site/china.js}"></script>
+    <script th:src="@{/js/site/render.js}"></script>
+
+     <script type="text/javascript" th:inline="javascript">
+           var windSpeed=(50-12.8)*10;
+            $('.windSpeed .windFan').css('animation-duration', windSpeed+'ms');
+     
+          setTimeout(function(){
+		    location.reload()
+		  }, 20000); //指定20s刷新一次
+		  
+		  
+		  $("body").on("click","#line",function(){
+		         
+		         //获取上下文
+		       var contextPath = [[${#httpServletRequest.getScheme()}]]+'://' +[[${#httpServletRequest.getServerName()}]]+ ':' + [[${#request.getServerPort()}]]  + [[${#request.getContextPath()}]];
+		     
+		      var  url=contextPath +"/android/vue/linenew?lineName="+$(this).find("span").first().text();
+		      window.open(url,"_blank");   
+		   })
+    </script>
+    
+    
+    动画写法=========================================================================
+ @keyframes speed {
+0% {
+    transform:rotate(0deg);
+}
+100% {
+    transform:rotate(360deg);
+}
+}
+ 
+ .windWrap .windFan{
+    animation: speed 600ms linear infinite;
+}
