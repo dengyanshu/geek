@@ -1,0 +1,57 @@
+server:
+  # 服务器的HTTP端口，默认为80
+  port: 50101
+  #springboot 2.0后面的版本 是servlet.context-path  以前的版本的context-path
+spring:
+      application:
+               name: geek-eureka-server  #2台eureka server  同一个应用名字
+      #2.0后面的版本加spring前缀 账号和用户名 密码别写错
+      security:
+              basic:
+                enabled: true 
+              user:
+                name: geek
+                password: geek123
+eureka:
+   client:
+      registerWithEureka: true
+      fetchRegistry: true
+      serviceUrl:
+          defaultZone: http://geek:geek123@192.168.1.252:50101/eureka/
+   server:
+       enable‐self‐preservation: false #是否开启自我保护模式  开发阶段关闭
+       eviction‐interval‐timer‐in‐ms: 60000 #服务注册表清理间隔（单位毫秒，默认是60*1000））
+   instance:
+       ip-address: 192.168.8.254
+       hostname: ${eureka.instance.ip-address}
+       instance-id: ${eureka.instance.ip-address}:${spring.application.name}:${server.port}
+       
+ ===============================================================pom文件
+   <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+     </dependency>
+ ===============================================================pom文件
+ 
+ @SpringBootApplication
+@EnableEurekaServer
+public class App {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+           SpringApplication.run(App.class, args);
+	}
+	
+	@Configuration
+	@EnableWebSecurity
+	static class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	    @Override
+	    protected void configure(HttpSecurity http) throws Exception {
+//	        // Spring Security 默认开启了所有 CSRF 攻击防御，需要禁用 /eureka 的防御
+	    	http.csrf().ignoringAntMatchers("/eureka/**");
+	    	//访问eureka控制台和/actuator时能做安全控制
+	        super.configure(http);
+//            http.csrf().disable();//禁用CSRF
+//            http.authorizeRequests().anyRequest().authenticated().and().httpBasic();
+	    }
+	}
