@@ -215,7 +215,7 @@ export default new Router({
   linkActiveClass:'mui-active'
 })
 
-E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：npm install sass sass-loader@6.0.6
+E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：cnpm install sass sass-loader@6.0.6
 
 11、路由路径写法
     <rout-link  :to="'/head/news/newsinfo'+item.id">
@@ -240,3 +240,32 @@ E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：npm in
 	   Pinglun
 	 }
      }
+
+======================================================================================================================================
+12、vue cli 引入bootstrap 3
+1.引入jq：
+　　在npm控制台中，进入项目目录，然后输入指令cnpm install jquery --save-dev（npm换成cnpm更好，国内环境下使用cnpm下载速度更快）。
+2.修改build目录下的webpack.base.conf.js配置文件：
+  1）加入webpack对象：var webpack=require('webpack');
+  2）在module.exports里面加入以下配置：　
+复制代码
+plugins: [  
+ 　　　　new webpack.ProvidePlugin({  
+ 　　　　　　$:"jquery",  
+　　　　　　 jQuery:"jquery",  
+　　　　　　 "windows.jQuery":"jquery"  
+　　　　 })  
+　　]  
+  3）在入口文件main.js中加入：import jquery from 'jquery'
+3.引入bootstrap：
+  1）修改webpack.base.conf.js文件：
+alias: {  
+　　　　 'vue$': 'vue/dist/vue.esm.js',  
+　　　　 '@': resolve('src'),  
+　　　　 'assets': path.resolve(__dirname, '../src/assets'),  
+　　　　 'jquery': "jquery/src/jquery"  
+　　 }  
+  2）在入口文件main.js中加入：
+　import './assets/bootstrap/css/bootstrap.min.css'  
+　import './assets/bootstrap/js/bootstrap.min'  
+====================================================================================================================================== 
