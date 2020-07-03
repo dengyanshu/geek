@@ -215,7 +215,8 @@ export default new Router({
   linkActiveClass:'mui-active'
 })
 
-E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：cnpm install sass sass-loader@6.0.6
+E、scss使用异常 是sacc-loader 版本过高导致的  解决方法：cnpm install sass sass-loader@6.0.6  -S
+  安装完后提示缺少 cnpm  i node-sass  -S
 
 11、路由路径写法
     <rout-link  :to="'/head/news/newsinfo'+item.id">
