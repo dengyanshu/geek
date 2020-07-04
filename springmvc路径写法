@@ -1,0 +1,2 @@
+@RequestMapping(value= {"/site/{site}","/site"})
+    public String  vuesite(Model  model,@PathVariable(value = "site",required = false)String site) {
