@@ -270,3 +270,35 @@ alias: {
 　import './assets/bootstrap/css/bootstrap.min.css'  
 　import './assets/bootstrap/js/bootstrap.min'  
 ====================================================================================================================================== 
+
+
+
+========================================================================================================================================
+13、vue中node  导出excel方法：
+  1.安装：
+       npm install -S file-saver xlsx
+       install -D script-loader
+  2.创建放置插件的文件夹
+创建vendor文件夹；
+创建Blob.js和Export2Excel.js文件；（相关文件内容在文后附）
+注意：在E2E.js的文件开头的引入，引入Blob.js时要写正确的路径地址。
+我的vendor是在src > plugins > vendor中，而且alias中设置了'@': resolve('src')，所以路径地址为@/vendor/Blob
+   main.js:
+    require('script-loader!file-saver');
+    require('script-loader!@/vendor/Blob');
+  3、调用
+  exportTable(){
+         require.ensure([], () => {
+            const { export_json_to_excel } = require('../../vendor/Export2Excel');
+            const tHeader = ['日期', '线体', '工单', '不良代码','不良个数','不良描述'];
+            const filterVal = ['day', 'lineName', 'workorderName','sn','qty', 'errorcode_description'];
+            const list = this.lineinfos;
+            const data = this.formatJson(filterVal, list);
+            export_json_to_excel(tHeader, data, '不良抽检记录');
+          })
+    },
+    formatJson(filterVal, jsonData) {
+          return jsonData.map(v => filterVal.map(j => v[j]))
+    },
+
+
