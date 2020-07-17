@@ -17,14 +17,16 @@ eureka:
       registerWithEureka: true
       fetchRegistry: true
       serviceUrl:
-          defaultZone: http://geek:geek123@192.168.1.252:50101/eureka/
+          defaultZone: http://geek:geek123@192.168.8.254:50100/eureka/,http://geek:geek123@192.168.1.252:50100/eureka/
    server:
        enable‐self‐preservation: false #是否开启自我保护模式  开发阶段关闭
        eviction‐interval‐timer‐in‐ms: 60000 #服务注册表清理间隔（单位毫秒，默认是60*1000））
    instance:
-       ip-address: 192.168.8.254
-       hostname: ${eureka.instance.ip-address}
-       instance-id: ${eureka.instance.ip-address}:${spring.application.name}:${server.port}
+       prefer-ip-address: true  #自动解析ip
+       #ip-address: 127.0.0.1 192.168.8.254
+       #hostname: ${eureka.instance.ip-address}
+       #instance-id: ${eureka.instance.ip-address}:${spring.application.name}:${server.port}
+       instance-id:  ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
        
  ===============================================================pom文件
   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
