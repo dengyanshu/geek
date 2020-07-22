@@ -1,0 +1,6 @@
+C:\Users\Administrator>keytool  -genkeypair -alias geekkey -keyalg RSA -keypass
+geekkeypass -keystore geek.keystore -storepass geekstorepass
+
+
+--生成到当前目录下
+要获取公钥 需要使用工具 打开后 拼成一行  
