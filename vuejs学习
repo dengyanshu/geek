@@ -301,4 +301,15 @@ alias: {
           return jsonData.map(v => filterVal.map(j => v[j]))
     },
 
-
+14 es6  新语法
+   解构参数  
+              function someFunc(name,age,{sex,parent}){
+                  //解构参数 必须传递 引擎后台会自动解析
+		  
+             }
+             //函数调用
+	     someFunc('zhangsan',21,obj){
+	        //会自动解析
+		let   {sex,parent}=obj;
+		//相当于 let  sex=obj.sex  ;let parent=obj.parent;
+	     }
