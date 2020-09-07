@@ -1,0 +1,3 @@
+start nginx  一般2进程  一个master  一个worker
+nginx -s  reload  有时候配置文件其实载入不成功
+nginx  -s  stop 
