@@ -1,0 +1,68 @@
+1、pom 文件依赖  只需要这2个就可以实现pdf的保存和直接流输出到页面了
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.deng</groupId>
+            <artifactId>myfont</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+2、
+  2.1 导入并设置字体
+ 这里需要注意一点就是，这个设计出的不显示中文，需要导入字体。
+
+  点击window->Preferences->jaspersoft Studio->font->add   取名叫myfont  预先下载好中文字体SSSONG.ttf
+  
+  2.2 设计模板选择设置的myfont字体 修改jasper 设计器里面 选择成myfont 字体
+    查看jrxml文件后，设置后会多出font标签
+                <font fontName="myfont" size="26" pdfFontName="" pdfEncoding="UniGB-UCS2-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[三年二班学生信息]]></text>
+   2.3 导出myfont字体jar包
+点击window->Preferences->jaspersoft Studio->font
+选择myfont 点击export 导出。这里我保存为myfont.jar
+2.4 将myfont.jar 安装到本地maven库
+mvn install:install-file -Dfile=kevin.jar -DgroupId=com.kevin -DartifactId=myfont -Dversion=1.0.0 -Dpackaging=jar
+至此，前期的准备工作都已经完成。
+
+
+3、编码
+  @RequestMapping("/exportpdf")
+	public void exportPdf(ServletResponse resp) throws Exception {
+		HttpServletResponse response = (HttpServletResponse) resp;
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("demo.jasper");
+		// InputStream is= new FileInputStream("d:\\demo.jasper");
+
+		// 构建数据
+		Map<String, Object> Pmap = new HashMap<String, Object>();
+		Pmap.put("name", "aaaaa");
+
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		Map<String, String> map = null;
+		for (int i = 0; i < 100; i++) {
+			map = new HashMap<String, String>();
+			map.put("employeeId", i + 1 + "");
+			map.put("employeeName", "姓名" + i + 1);
+			map.put("employeeCode", "employeeCode:" + i + 1);
+			map.put("createDate", "2020-06-10");
+			list.add(map);
+
+		}
+
+		// JasperPrint print = JasperFillManager.fillReport(is,new HashMap<>(),new
+		// JRBeanCollectionDataSource(list));
+		// JasperExportManager.exportReportToPdfStream(print,response.getOutputStream());
+
+		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(is);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, Pmap,
+				new JRBeanCollectionDataSource(list));
+		
+		/**
+		 *  第一种处理方式  前台调用  后台直接保存成文件   然后把路径返回回去给前台   前台 再去发起下载文件请求 弹出页面
+		JRPdfExporter pdf = new JRPdfExporter();
+		pdf.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+		pdf.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, "d://1.pdf");
+		pdf.exportReport();
+        */
