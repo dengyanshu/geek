@@ -65,4 +65,10 @@ mvn install:install-file -Dfile=kevin.jar -DgroupId=com.kevin -DartifactId=myfon
 		pdf.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
 		pdf.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, "d://1.pdf");
 		pdf.exportReport();
-        */
+              */
+             
+	           //第2种方式  在前台页面 比如 1.html  点击  <a  href="jasperReport/exportpdf"  target="_blank">打印<a/>  打开新页面 此控制器直接返回此pdf 流页面
+	           response.setContentType("application/pdf");
+		  response.setHeader("Content-Disposition", "inline;"); final OutputStream
+		  outputStream = response.getOutputStream();
+		  JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
