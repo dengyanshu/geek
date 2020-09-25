@@ -13,7 +13,7 @@
   2.1 导入并设置字体
  这里需要注意一点就是，这个设计出的不显示中文，需要导入字体。
 
-  点击window->Preferences->jaspersoft Studio->font->add   取名叫myfont  预先下载好中文字体SSSONG.ttf
+  点击window->Preferences->jaspersoft Studio->font->add   取名叫myfont  预先下载好中文字体   华文宋体.ttf
   
   2.2 设计模板选择设置的myfont字体 修改jasper 设计器里面 选择成myfont 字体
     查看jrxml文件后，设置后会多出font标签
