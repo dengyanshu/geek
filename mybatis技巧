@@ -1,0 +1,90 @@
+1、mapper接口中定义 变量 List<QCHeader> selectSecondHead(@Param("workstation") String workstation,@Param("type") String type,@Param("sort") String sort);
+ 后台mapper.xml 可以直接写parameterType="string"  不需要map 接受了
+  <select id="selectSecondHead"   resultMap="QCHeaderResultMap"  parameterType="string">
+     SELECT errorcode_id id,errorcode_description prop, errorcode_description name ,CAST(width  AS  VARCHAR(50)) width
+     FROM   dbo.errorcode  WITH(NOLOCK)  WHERE  workstation=#{workstation} and type=#{type}  AND  sort=#{sort}
+  </select>
+  
+  2、sql server 存储过程调用
+       <select id="qcdatas"   parameterType="map"  resultType="map" statementType="CALLABLE">
+     {
+          #{res,mode=OUT,jdbcType=INTEGER,javaType=int}=call  Tpc_qcreport_byType(
+	            #{msg,mode=OUT,jdbcType=VARCHAR,javaType=String},
+	           #{site,mode=IN,jdbcType=VARCHAR,javaType=String},
+	             #{workstation,mode=IN,jdbcType=VARCHAR,javaType=String},
+	           #{type,mode=IN,jdbcType=VARCHAR,javaType=String},
+	           #{minDate,mode=IN,jdbcType=VARCHAR,javaType=String},
+	           #{maxDate,mode=IN,jdbcType=VARCHAR,javaType=String}
+	           )
+      }
+  </select>
+  
+  mapper接口
+  List<Map<String, String>> qcdatas(Map<String, Object> para);
+  
+  service层
+  public Object stockin(String site, String minDate, String maxDate) {
+			// TODO Auto-generated method stub
+			Map<String,Object>   para=new   HashMap<String, Object>();
+			para.put("res",-1);
+			para.put("msg","");
+			para.put("site",site);
+			para.put("minDate",minDate);
+			para.put("maxDate",maxDate);
+			List<Map<String,String>> data= resourceMapper.stockin(para);
+			return new CommonResult(para.get("res").toString(),para.get("msg").toString(),data);
+		}
+    
+    
+    3、 动态where 拼接   like  '%${descri}%'
+    <select id="selectUph"  parameterType="string"  resultType="int">
+    SELECT * FROM   dbo.UPH  WITH(NOLOCK)
+    <where>
+		<if test="productroot != null and productroot != ''">
+			AND productroot = #{productroot}
+		</if>
+		<if test="descri != null and descri != ''">
+			AND product_descri LIKE	'%${descri}%'
+		</if>
+	</where>
+  
+  
+  4、多行批量插入
+    <insert id="binding"  >
+      INSERT  INTO  dbo.packing
+        ( box_sn ,
+          colorbox_sn ,
+          colorbox_qty 
+        )
+     VALUES  
+    <foreach collection ="colorsn_list" item="color" separator =",">
+         (#{boxsn}, #{color.colorsn}, #{qty})
+    </foreach >
+  </insert>
+  </select>
+  
+  
+  
+  @PostMapping("/binding/{boxsn}/{qty}")
+	public @ResponseBody Object   binding(@PathVariable("boxsn") String boxsn ,@PathVariable("qty") int qty ,@RequestBody String colorsn_list) {
+		
+		ObjectMapper  objMapper=new ObjectMapper();
+		ArrayList<Map<String, String>> colors=null;
+		try {
+			colors = (ArrayList<Map<String, String>>) objMapper.readValue(colorsn_list, List.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		packingMapper.binding(boxsn,qty, colors);
+		
+		return  new BaseResult(null, CommonCode.SUCCESS) ;
+	}
+  
