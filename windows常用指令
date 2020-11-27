@@ -1,0 +1,5 @@
+解除端口占用
+查询
+netstat  -ano|findstr "50000"
+杀掉
+taskkill -pid  8968 -f
