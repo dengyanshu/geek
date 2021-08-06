@@ -1,0 +1,153 @@
+1、上拉刷新 下拉触底
+   page.json 中设置 允许下拉刷新 触底距离
+   在页面vue 中 同生命周期函数 写业务处理
+   如果是scroll-view 的话 用scroll-view 的事件处理函数来写
+2、navbar app用自定义的在page.json中配置中
+    pages:[
+     {
+        path:'',
+       style:{
+         app-plus:{
+             titleNView:{
+               searchInput//这个组件uniapp 封装的非常好  navbar 很多事件需要处理
+              }
+         }
+          
+       }
+      }
+    ]
+
+   自定义navbar 需要设置titleNView:：false  或者nav:custom
+   自定义navabar组件 左边点击事件  会发射 this.$emit('click-left')
+   父组件page页面中 写  @click-left="goBack"  会触发父组件事件
+   自定义navBar 用slot 可以实现个性化的自定义导航navBar
+       
+3、uniapp   v-if="bool"
+   :class="?'style1','style2'" 
+   :class="['staticClass',{isCollapse:collapse}]"
+4、样式 
+   vue项目中 assets/styles/index.scss    @import  './xxx.scc'   main.js中全局引入 import 'index.scss'
+   uniapp 中 直接在app.vue 引入 @import
+5、按钮动画
+   hover-class="动画样式"
+6、图片上传 与预览
+   uni原生api 方法 选择图片上传成功回调会返回图片的路径
+  后期自己可以根据业务需求  循环遍历这些路径 展示 和预览图片
+  建议使用插件市场写好的功能 已经实现上传 图片删除  预览等功能
+
+7、页面缓存
+        a、生命周期函数 onBackPress(){
+            弹窗提示 uni.showModal  保存 uni.setStorage 缓存到storage中 不保存 清空缓存
+             需要一个showBack 标识 不然为弹出2次
+
+        }
+       
+       b、onLoad(){
+          //如果缓存中有的话  直接取缓存 
+          //这里有子组件props数据传递过来 bug 无法显示图片
+           显示图片数据的时候需要需要在子组件的生命周期函数中 再赋值一次     
+           
+          onReady(){
+            this.data=props_data;
+          }
+       }
+       
+       c、
+       调用组件ref属性 获取组件对象 调用对象方法（非父子组件）
+       this.$refs.uploadimg.chooseImg()
+      
+
+      d、props 写法
+       props:['data']
+       props:{
+           list:Array,
+           show:{
+                type:boolean,
+                default:true
+            }
+        }
+        uploadImg 组件props上接受这个show（通过图片的个数）  来显示隐藏这个组件  
+        如果直接主页面  组件上写v-if的会造成 this.$ref.uploadimg 报错 
+       因为没有渲染 所有要在子组件内部用props来接受
+
+
+7、navBar 中间多个选项卡 
+   遍历出来 
+   index的索引在data中记录 点击的时候切换index 值  
+   :class="current_index===index?'active':''"
+   
+   页面结构为：swipe 是横向滚动用
+    <swipe>
+     <scroll-view></scroll-view> 
+   </swipe>
+   
+   页面初始化
+   onLoad(){
+      //uni.getSysteminfo()获取当前系统信息  然后获取高度
+   }
+
+8、话题详情页面
+   page.json页面配置  顶部导航 app-plus:{
+      titleNvw:{
+        type:'transparent' //渐变透明
+        button:'menu'   //配置...
+      }
+   }
+   具体页面设置 插入一张图片 然后透明度
+   小图片 使用 margin-top:-50px 上移 然后z-index=10    
+
+   选项卡tabs（默认 最新 ） data中设定index索引 默认为0  选择默认选项 
+ <view  v-for="(item,index) in tabs"     @click='changeTabs(index)'   :class="['standard',index===this.tabindex?'active':'']">
+  </view>
+  
+  上拉加载事件
+  loadMore(){
+     if(this.loadtext==='正在加载中...') return;//事件不触发
+     this.loadtext==='正在加载中'，
+     调用api获取数据 然后添加到这里
+  }
+
+
+9、登录
+  table设计：
+  user
+  userid  username  nickname img    phone  email   其他信息
+  user_others
+  id     userid   type('微信'，‘qq’)  openId   nickname   img
+
+  手机号验证码后端逻辑：
+  手机号合法性 ---redis缓存中存在返回否则---发送验证码存redis60秒过期
+   
+======================================================================
+1、主页
+封装的信息页组件：通过props:['data']  props:{list:Array,isfollow:{type:boolean,default:false}}  接受父组件传过来的信息
+数据格式为：
+[
+{
+  headimg:'',
+  nickname:'',
+  userid:'',
+  time:'',
+  img:'',
+  isfollow:false,
+  id:''//标识信息id
+}
+]
+
+2、100vh
+
+3、导航取消自动返回按钮（只有app端生效）
+   badge 插槽强化
+   scroll-view  高度算不对 会造成滚动的时候不美观
+
+4、聊天界面
+   每条消息：消息对象item里面放ueseriD 比对是不是本人 显示的时候是不是加flex-direction:row-reverse  flex布局 图像 nickname  content  flex-direaction:row-reverse 反转从右边开始排  
+   每条消息的上面是否显示时间：封装组件的时候  需要传入 item 与上一个时间 显示时间或者不显示时间
+  <scroll-view>
+      //里面是每个消息组件
+       <block  v-for=(item，index) in list  :key="index">
+            <info  :item="item"  :pretime="list[index-1].time"></info>
+      </block>
+  </scroo-view>
+
+
