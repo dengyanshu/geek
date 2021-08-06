@@ -1,0 +1,346 @@
+===================================================================================
+day1:
+控制 
+//每帧执行  fps不同 帧不同 该方法会不停的每帧执行
+Update(){
+   if(Input.GetKey(KeyCode.W)){
+      transform.translate(Vector3.Up*Time.deltaTime)  
+   }
+ 
+}
+//固定执行 但会大幅度损耗系统性能 慎用
+fixedUpdate(){
+}
+
+摄像机：
+有正交摄影和透视投影（3D） 2个面 near 1  far 5 代表摄像机拍摄的远和近
+
+
+using UnityEngine;
+
+using System.Collections;
+
+
+public class Gui1 : MonoBehaviour {
+
+    //全局变量存储title
+    private string title="";
+    private bool isShow = false;
+
+    private int count = 0;
+
+
+
+    private bool windowIsShow = false;
+
+
+    private Rect rectPos = new Rect(100, 100, 200, 200);
+
+
+    //public  pic    第一步asset资源库 拖进来这个图片  然后C#脚本中 public  Texture2D  Pic就可以引用这个对象了   第三步 在c#左边的脚本中 手动图形化指定这个图片
+
+    public Texture2D Pic1;
+
+    void start()
+    {
+        title = "";
+    }
+
+    //每帧会擦除重绘
+    void OnGUI()
+    {
+        //gui  块式布局
+        GUI.DrawTexture(new Rect(100, 100, Pic1.width / 3, Pic1.height / 3), Pic1);
+        
+        
+        
+        
+        count++;
+
+        title=GUILayout.TextField(title, GUILayout.Width(100));
+
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(30);
+        if (GUILayout.Button("TEST CLICK"))
+        {
+            Debug.Log("t抬起来才会触发");
+            Camera.main.transform.Translate(Vector3.forward * Time.deltaTime);//每帧前移动  由于是GameObject
+            //如果是label  gui控件的话 由于每帧的擦除 button 也是gui
+            isShow = !isShow;
+        }
+       
+        if (isShow)
+        {
+            GUILayout.Label("label show!");
+        }
+        if (count >= 50)
+        {
+            isShow = !isShow;
+            count = 0;
+        }
+        GUILayout.EndHorizontal();
+
+       
+
+        //该重复按钮与button的区别在于  button 每次弹起才会返回true 执行业务代码 而这个只要按下会一直前进
+        if (GUILayout.RepeatButton("前进"))
+        {
+        }
+
+        //窗体
+        if (GUILayout.Button("打开窗体"))
+        {
+            windowIsShow = true;
+        }
+        if (windowIsShow)
+        {
+            rectPos=GUILayout.Window(1, rectPos, windowFunc, "window title");
+        }
+
+        
+
+    }
+    //窗体id   类似上面的1
+    void windowFunc(int id)
+    {
+        if (id == 1)
+        {
+            if (GUILayout.Button("关闭"))
+            {
+                windowIsShow = false;
+            };
+            GUI.DragWindow();
+        }
+    }
+
+}
+
+===================================================================================
+day2
+NGUI图集制作
+altas maker  ===》选择图片====》保存成prefabs===(我们只需要图集就好)
+
+精灵图 做成button 按钮：
+1、图集 选择属性选择为sprite  然后制作sprite  用鼠标切割成各个小图
+2、NGUI菜单上 把相机 添加UI camera\
+3、拖入小图 给小图 添加boxcollider  添加NGUI box交互组件  
+
+using UnityEngine;
+using System.Collections;
+
+public class Login : MonoBehaviour {
+
+    public UIInput txtUserName;
+    public UIInput txtPassword;
+	
+      // Use this for initialization
+	void Start () {
+	
+	}
+	
+	
+  // Update is called once per frame
+	void Update () {
+	
+	}
+    public void OnClick()
+    {
+        Debug.Log(txtUserName.value + "_" + txtPassword.value);
+    }
+}
+
+
+
+
+
+代码创建 销毁游戏对象并添加和删除组件 （只能创建系统默认提供的cube等游戏对象 如果想创建其他的游戏对象 需要预设对象）
+制作地球预设对象  新建球体 拖入pic  然后把此对象 放入project 自动成为预设对象 并命名为Earth
+
+//新建场景添加空对象  绑定此脚本 然后脚本绑定此预设对象
+
+public class TestEarth : MonoBehaviour {
+
+    public GameObject Earth;
+
+
+    private GameObject earth;
+
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+             earth = Instantiate(Earth) as GameObject;
+            earth.transform.position = Vector3.zero;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            //此move是c#脚本名字 
+            earth.AddComponent<Move>();
+        }
+
+
+    }
+}
+===================================================================================
+day3
+悟空动作操作
+
+
+
+开源的iTween 动画制作：
+第一步：下载插件2个cs文件  导入到工程  提示更新 选择更新
+第二步： 直接可以在工程中调用这些类库的方法
+第三步：iTweenPath脚本拖入到gameObject 用于制作自定义path  iTweenPath.GetPath("path1")  可以获取path
+public class TestiTween : MonoBehaviour {
+
+	
+      // Use this for initialization
+	
+      void Start () {
+        iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPath("path1"), "easeType", "easeInOutExpo", "loopType", "pingpong", "delay", .2));
+	
+       }
+	
+	
+      
+
+    // Update is called once per frame
+	
+        void Update () {
+                
+           //moveto  moveby  rotate  一般这几种动画
+        
+          //这有gameObject  原因是这个脚本必须挂载到指定的对象上 所以这里有gameObject  还有name 等属性  获取摄像机Camera.main
+
+
+
+        //iTween.Hash方法创建的hash对象 是hash键值队形式
+        //iTween.MoveTo(gameObject, iTween.Hash("x", 1, "y", 2,"easeType","easeInOutExpo","loopType","pingpong","delay",.2));
+
+      }
+}
+
+unity也可以做动画 用多张图合成动态动画 或者位置变化动画等
+
+
+
+
+地形制作：
+删掉主摄像机---悟空内部添加摄像机----摄像机设置远近---开启调试--获取摄像机组件transform参数copy下 然后关掉调试 粘贴组件----  
+
+
+skybox非常简单  摄像机加skybox组件 选择贴图(用开源别人做的图)
+
+
+粒子系统（import package ==选择particleSystem）
+
+
+刚体：
+   先给对象加rigidbody====>然后此对象会受到物理效果
+
+collider碰撞体
+   可以给plane  添加自定义物理材料  比如说 没有摩擦力 当倾斜时候箱子会跌落
+   碰撞可以检测
+
+
+
+射线很复杂：
+  Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+RaycastHit hit;
+if(Physics.Raycast(ray,out hit，1<<9 | 1<<8)//如果命中
+{
+     //Destory(hit.collider.gameObject)可以获得命中的游戏对象
+}
+
+
+shotbox代码：
+ublic class ShotBox : MonoBehaviour {
+
+
+    public GameObject Box;
+
+    public GameObject Bullet;
+
+
+    public Texture2D Cursor1;
+	//这个textture 必须在属性里面设置成cursor
+// Use this for initialization
+	
+    void Start () {
+	   //初始化箱子
+
+        
+       for(int x=0;x<3;x++){
+            for (int y = 0; y < 8; y++)
+            {
+                GameObject box = Instantiate(Box) as GameObject;
+                box.transform.position = new Vector3((float)y, x, 4.5f);  //(0,0,4.5)  (1,0,4.5)
+            }
+           
+        
+        }
+        
+       //初始化一个cursor
+        Cursor.SetCursor(Cursor1, new Vector2(Cursor1.height / 2, Cursor1.height / 2), CursorMode.Auto);
+	
+   }
+	
+	
+      
+   // Update is called once per frame
+	
+      void Update () {
+        
+        //按下鼠标左键
+        
+        if(Input.GetMouseButtonDown(0)){
+             
+          //发射射线
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out  hit))
+            {
+                //创建一个子弹 在主摄像机位置
+                GameObject  bullet=  Instantiate(Bullet) as  GameObject;
+                bullet.transform.position = Camera.main.transform.position;
+                Rigidbody  rigidbody=bullet.GetComponent<Rigidbody>();
+                rigidbody.velocity =( hit.point - bullet.transform.position)*3;
+
+            }
+        
+        
+        }
+	   
+	
+}
+}
+
+===================================================================================
+
+day4  
+NGUI 做图集  图片改变属性成spirte   做位置动画或动态图
+
+
+音频播放组件：
+2种方式 第一种摄像机 完成播放背景 第2种  播放剪切好的 clip
+
+
+图片做按钮功能：
+1、主摄像机上添加ngui菜单  camera  tool  主摄像机上添加ui camera  同时需要把 ui camera 设置成2d (NGUI CAMERA 后面的事件写法 不能使用原生的 需要使用NGUI)
+2、主背景2d 图片上Z位置 改为1  否则没有层次关系 会看不到其他按钮图片
+3、图片添加collider 修改trigger
+
+NGUI自定义事件写法：
+ 创建Script 空对象 挂载脚本      然后游戏对象必须有collider  然后给游戏对象添加2个组件 一个是事件监听组件 一个是事件触发组件  在事件触发组件里面绑定这个Script对象 选择里面的public 方法进行触发
+
+
