@@ -1,0 +1,14 @@
+1、默认事务 是指数据进行增删改的时候  自动开启transaction  
+否则手动启动start transaction  rollback  commit
+2、mysql  sqlserver  事务是默认自动提交  oracle是默认不自动提交
+3、事务特性：
+    原子性（一致性，事务中的操作 要么全部成功 要么全部失败），隔离性
+4、事务隔离有4个级别
+   read uncommitted  最低 （3种错误都可以出现）
+   read  committed    oracle默认此级别
+   read repeadedable   mysql默认此级别
+   serialziable   最高   不会出现任何问题 但是效率太低
+   事务造成的后果
+   脏读  读到另一个事务中 未提交的数据 如 a-500,b+500  在第2个事务中读到了 而第一个事务还未提交
+   虚读
+   幻读
