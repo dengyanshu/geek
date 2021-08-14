@@ -103,3 +103,21 @@
 	public @ResponseBody Object  deleteList(Integer[] id){
 	   return  userService.deleteList(ids);
 	}
+
+
+6、多对多 一对多
+<mapper namespace="cn.yanshu.dao.UserMapper" >
+  <resultMap id="UserResultMap" type="cn.yanshu.entity.User" >
+    <id column="user_Id" property="userId" jdbcType="INTEGER" />
+    <result column="user_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_Password" property="userPassword" jdbcType="VARCHAR" />
+    <result column="user_Type" property="userType" jdbcType="VARCHAR" />
+    <result column="user_Description" property="userDescription" jdbcType="VARCHAR" />
+    <association property="role" resultMap="cn.yanshu.dao.RoleMapper.RoleResultMap"></association>
+    多对多 或者一对多 写collection
+    一个xml 可以写多个resultMap  resultMap 可以引用 也可以根据column 自己再写一次 如
+    <collection property="Users" >
+       <id column="" property=""></id>
+       <result column="" property=""></result>
+    </collection>
+  </resultMap>
