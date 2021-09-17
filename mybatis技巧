@@ -121,3 +121,29 @@
        <result column="" property=""></result>
     </collection>
   </resultMap>
+
+
+7、获取插入的主键id  插入中间表
+ <insert id="add"  parameterType="com.geek.Checkgroup">
+    <!---获取的插入的主键并返回注入到实体中checkgroup 的checkgroupId-->
+    <selectKey resultType="Integer" order="after"  keyProperty="checkgroupId">
+         select  last_insert_id()
+    </selectKey>
+    insert  into  checkgroup()
+    values()
+ </insert>
+ 
+ 8、post提交requsetBody 和数组主键
+   this.axios.post("/url?checkItemids="+this.checkItemIds)
+   .data(
+   {
+      checkgroup:  checkgroup   //json对象
+   }
+   ).then(res=>{
+   })
+   
+   controller 写法  
+   public  Object  add(@RequestBody Checkgroup  checkgroup,int[] checkItemids)
+   
+ 9  float  double  计算机无法表示小数 只有近似数    存在加减问题
+   如果对数据要求严格  数据库 应该用decimal  java端 用bigdemercal
