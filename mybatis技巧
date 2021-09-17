@@ -147,3 +147,11 @@
    
  9  float  double  计算机无法表示小数 只有近似数    存在加减问题
    如果对数据要求严格  数据库 应该用decimal  java端 用bigdemercal
+
+
+10、前端后端参数
+   传统前端post表单提交  后端接收 直接用对象实体接收
+   ---------------------------------------------------------------------------------------------
+   前端json post 提交  url?some=xxxx   post请求体数据 为json字符串  {‘checkgroupname’:xxx,'descri':'xxxx'}
+   多个实体@RequestParam()string some   一个实体@RequestBody  Checkgroup  checkgroup
+   
